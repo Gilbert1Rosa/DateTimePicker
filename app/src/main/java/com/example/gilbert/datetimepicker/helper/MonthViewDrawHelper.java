@@ -24,8 +24,7 @@ public class MonthViewDrawHelper {
     private int measuredWidth;
     private int measuredHeight;
 
-    private static final int HORIZONTAL_MARGIN = 0;
-    private static final int VERTICAL_MARGIN = 0;
+
     private int horizontalStep;
     private int verticalStep;
 
@@ -50,7 +49,7 @@ public class MonthViewDrawHelper {
 
     public void drawWeekDayLabels(Canvas canvas) {
         Paint paint = DrawUtil.getDefaultBoldTextPaint();
-        int offset = HORIZONTAL_MARGIN;
+        int offset = Constants.MONTH_VIEW_HORIZONTAL_MARGIN;
         for (DayOfWeek day : getDays()) {
             int x = Constants.MONTH_VIEW_HORIZONTAL_PADDING + offset;
             int y = Constants.MONTH_VIEW_VERTICAL_PADDING;
@@ -72,8 +71,8 @@ public class MonthViewDrawHelper {
             if (offset % 7 == 0) {
                 actualWeek++;
             }
-            x = MetricsUtil.calculatePosition(HORIZONTAL_MARGIN, horizontalStep, offset % 7,0);
-            y = MetricsUtil.calculatePosition(VERTICAL_MARGIN, verticalStep, actualWeek, 0);
+            x = MetricsUtil.calculatePosition(horizontalStep, offset % 7,0);
+            y = MetricsUtil.calculatePosition(verticalStep, actualWeek, 0);
             canvas.drawText(Integer.valueOf(actualDay).toString(), x, y, paint);
             offset++;
             actualDay++;
@@ -81,7 +80,7 @@ public class MonthViewDrawHelper {
     }
 
     public int getDayNumberByPosition(float x, float y) {
-        return 1;
+        return MetricsUtil.getPositionByCoordinates(x, y, horizontalStep, verticalStep);
     }
 
     private DayOfWeek[] getDays() {
@@ -94,15 +93,11 @@ public class MonthViewDrawHelper {
         return daysArray;
     }
 
-    public void setMonth(Month month) {
-        this.month = month;
+    public int getVerticalStep() {
+        return verticalStep;
     }
 
-    public void setSelectedDate(LocalDate selectedDate) {
-        this.selectedDate = selectedDate;
-    }
-
-    public void setStartDayOfWeek(DayOfWeek startDayOfWeek) {
-        this.startDayOfWeek = startDayOfWeek;
+    public int getHorizontalStep() {
+        return horizontalStep;
     }
 }

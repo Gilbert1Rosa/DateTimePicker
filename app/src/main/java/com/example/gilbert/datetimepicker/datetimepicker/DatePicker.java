@@ -13,23 +13,27 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Calendar;
 
 public class DatePicker extends DialogFragment {
 
+    private LocalDate selectedDate;
     private ViewPager monthViewPager;
 
     public DatePicker() {
 
     }
 
-    public static DatePicker create() {
+    public static DatePicker create(LocalDate selectedDate) {
         DatePicker datePicker = new DatePicker();
+        datePicker.selectedDate = selectedDate;
         return datePicker;
     }
 
@@ -37,7 +41,11 @@ public class DatePicker extends DialogFragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.date_picker_dialog, container);
+        View v = inflater.inflate(R.layout.date_picker_dialog, container);
+        ((TextView) v.findViewById(R.id.dayText)).setText(String.valueOf(selectedDate.getDayOfMonth()));
+        ((TextView) v.findViewById(R.id.monthText)).setText(selectedDate.getMonth().toString());
+        ((TextView) v.findViewById(R.id.yearView)).setText(String.valueOf(selectedDate.getYear()));
+        return v;
     }
 
     @Override
@@ -45,6 +53,14 @@ public class DatePicker extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         monthViewPager = view.findViewById(R.id.monthPages);
         monthViewPager.setAdapter(new MonthViewPagerAdapter(getChildFragmentManager(), getContext()));
+    }
+
+    public void setDisabledDates(Calendar calendar) {
+
+    }
+
+    public void setDisabledDaysOfWeek(DayOfWeek[] disabledDaysOfWeek) {
+
     }
 
     class MonthViewPagerAdapter extends FragmentPagerAdapter {

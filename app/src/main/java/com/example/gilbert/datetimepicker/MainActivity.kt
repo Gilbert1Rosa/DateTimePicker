@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.example.gilbert.datetimepicker.datetimepicker.DatePicker
 import kotlinx.android.synthetic.main.activity_main.*
+import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
     fun setupEvents() {
         showDateDialog.setOnClickListener {
-            DatePicker.create().show(supportFragmentManager, "DATE_DIALOG")
+            DatePicker.create(LocalDate.of(1994, 10, 14)).show(supportFragmentManager, "DATE_DIALOG")
         }
     }
 }

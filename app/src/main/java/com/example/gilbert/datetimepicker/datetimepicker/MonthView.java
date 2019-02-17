@@ -7,6 +7,9 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.gilbert.datetimepicker.helper.MonthViewDrawHelper;
+import com.example.gilbert.datetimepicker.util.Constants;
+import com.example.gilbert.datetimepicker.util.MetricsUtil;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
@@ -90,10 +93,21 @@ class MonthView extends View {
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                selectDay(getDateByPosition(eventX, eventY));
-                invalidate();
-                handled = true;
+                handled = onTap(eventX, eventY);
                 break;
+        }
+        return handled;
+    }
+
+    private boolean onTap(float x, float y) {
+        boolean handled = false;
+        int eventBorder = MetricsUtil.calculatePosition(helper.getVerticalStep(), 1, 0);
+        int position = MetricsUtil.getPositionByCoordinates(x, y, helper.getHorizontalStep(), helper.getVerticalStep());
+        eventBorder -= 50;
+        if (y >= eventBorder) {
+            selectDay(getDateByPosition(x, y));
+            invalidate();
+            handled = true;
         }
         return handled;
     }
@@ -105,6 +119,6 @@ class MonthView extends View {
     }
 
     private LocalDate getDateByPosition(float x, float y) {
-        return LocalDate.of(selectedDate.getYear(), selectedDate.getMonth(), helper.getDayNumberByPosition(x, y));
+        return LocalDate.of(selectedDate.getYear(), month, helper.getDayNumberByPosition(x, y));
     }
 }
