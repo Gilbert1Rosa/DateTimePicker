@@ -3,6 +3,7 @@ package com.example.gilbert.datetimepicker.helper;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.LayoutInflater;
 
 import com.example.gilbert.datetimepicker.util.Constants;
 import com.example.gilbert.datetimepicker.util.DateUtil;
@@ -11,12 +12,14 @@ import com.example.gilbert.datetimepicker.util.MetricsUtil;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 
 public class MonthViewDrawHelper {
 
     private LocalDate selectedDate;
     private DayOfWeek startDayOfWeek;
+    private Month month;
     private DayOfWeek[] days;
     private int measuredWidth;
     private int measuredHeight;
@@ -26,9 +29,14 @@ public class MonthViewDrawHelper {
     private int horizontalStep;
     private int verticalStep;
 
-    public MonthViewDrawHelper(LocalDate selectedDate, DayOfWeek startDayOfWeek, int measuredWidth, int measuredHeight) {
+    public MonthViewDrawHelper(LocalDate selectedDate,
+                               Month month,
+                               DayOfWeek startDayOfWeek,
+                               int measuredWidth,
+                               int measuredHeight) {
         this.selectedDate = selectedDate;
         this.startDayOfWeek = startDayOfWeek;
+        this.month = month;
         this.days = getDays();
         this.measuredWidth = measuredWidth;
         this.measuredHeight = measuredHeight;
@@ -53,8 +61,9 @@ public class MonthViewDrawHelper {
 
     public void drawWeekDayNumbers(Canvas canvas) {
         Paint paint = DrawUtil.getDefaultTextPaint();
-        int offset = Arrays.binarySearch(days, DateUtil.firstDayOfMonth(selectedDate));
-        int daysCount = selectedDate.lengthOfMonth();
+        LocalDate date = LocalDate.of(selectedDate.getYear(), month, 1);
+        int offset = DateUtil.getDayPosition(days, DateUtil.firstDayOfMonth(date));
+        int daysCount = date.lengthOfMonth();
         int actualDay = 1;
         int actualWeek = 1;
         int x;
@@ -85,4 +94,15 @@ public class MonthViewDrawHelper {
         return daysArray;
     }
 
+    public void setMonth(Month month) {
+        this.month = month;
+    }
+
+    public void setSelectedDate(LocalDate selectedDate) {
+        this.selectedDate = selectedDate;
+    }
+
+    public void setStartDayOfWeek(DayOfWeek startDayOfWeek) {
+        this.startDayOfWeek = startDayOfWeek;
+    }
 }

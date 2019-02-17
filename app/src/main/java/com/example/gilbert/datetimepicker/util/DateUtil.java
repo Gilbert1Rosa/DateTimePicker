@@ -10,6 +10,17 @@ public class DateUtil {
         return date.getDayOfWeek().minus(dayOfMonth);
     }
 
+    public static int getDayPosition(DayOfWeek[] days, DayOfWeek selectedDay) {
+        int position = 0;
+        for(DayOfWeek day : days) {
+            if (day == selectedDay) {
+                break;
+            }
+            position++;
+        }
+        return position;
+    }
+
     public static int weekLineCountInMonth(int year, Month month) {
         return 0;
     }

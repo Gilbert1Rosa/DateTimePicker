@@ -9,16 +9,22 @@ import android.view.View;
 import com.example.gilbert.datetimepicker.helper.MonthViewDrawHelper;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 
-public class MonthView extends View {
+class MonthView extends View {
 
-    private LocalDate selectedDate = LocalDate.now();
-    private DayOfWeek startDayOfWeek = DayOfWeek.SUNDAY;
+    private LocalDate selectedDate;
+    private Month month;
+    private DayOfWeek startDayOfWeek;
     private int measuredWidth;
     private int measuredHeight;
 
     private MonthViewDrawHelper helper;
     private OnDaySelectedListener onDaySelectedListener;
+
+    interface OnDaySelectedListener {
+        void onDaySelected(LocalDate date);
+    }
 
     public MonthView(Context context) {
         super(context);
@@ -34,6 +40,34 @@ public class MonthView extends View {
 
     }
 
+    public Month getMonth() {
+        return month;
+    }
+
+    public void setMonth(Month month) {
+        this.month = month;
+    }
+
+    public LocalDate getSelectedDate() {
+        return selectedDate;
+    }
+
+    public void setSelectedDate(LocalDate selectedDate) {
+        this.selectedDate = selectedDate;
+    }
+
+    public DayOfWeek getStartDayOfWeek() {
+        return startDayOfWeek;
+    }
+
+    public void setStartDayOfWeek(DayOfWeek startDayOfWeek) {
+        this.startDayOfWeek = startDayOfWeek;
+    }
+
+    public void setOnDaySelectedListener(OnDaySelectedListener onDaySelectedListener) {
+        this.onDaySelectedListener = onDaySelectedListener;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         helper.drawWeekDayLabels(canvas);
@@ -45,7 +79,7 @@ public class MonthView extends View {
         super.onSizeChanged(xNew, yNew, xOld, yOld);
         measuredWidth = xNew;
         measuredHeight = yNew;
-        helper = new MonthViewDrawHelper(selectedDate, startDayOfWeek, measuredWidth, measuredHeight);
+        helper = new MonthViewDrawHelper(selectedDate, month, startDayOfWeek, measuredWidth, measuredHeight);
     }
 
     @Override
@@ -62,14 +96,6 @@ public class MonthView extends View {
                 break;
         }
         return handled;
-    }
-
-    public void setOnDaySelectedListener(OnDaySelectedListener onDaySelectedListener) {
-        this.onDaySelectedListener = onDaySelectedListener;
-    }
-
-    public interface OnDaySelectedListener {
-        void onDaySelected(LocalDate date);
     }
 
     private void selectDay(LocalDate dayDate) {
