@@ -1,6 +1,7 @@
 package com.example.gilbert.datetimepicker.helper;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Collection;
 
 public class MonthViewDrawHelper {
 
@@ -59,28 +61,53 @@ public class MonthViewDrawHelper {
     }
 
     public void drawWeekDayNumbers(Canvas canvas) {
-        Paint paint = DrawUtil.getDefaultTextPaint();
+        Paint blackPaint = DrawUtil.getDefaultTextPaint();
+        Paint whitePaint = DrawUtil.getDefaultBoldTextPaint();
         LocalDate date = LocalDate.of(selectedDate.getYear(), month, 1);
-        int offset = DateUtil.getDayPosition(days, DateUtil.firstDayOfMonth(date));
+        int offset = getFirstDayPosition();
         int daysCount = date.lengthOfMonth();
         int actualDay = 1;
         int actualWeek = 1;
-        int x;
-        int y;
+        int xCoordinate;
+        int yCoordinate;
+        whitePaint.setColor(Color.WHITE);
         while(actualDay <= daysCount) {
             if (offset % 7 == 0) {
                 actualWeek++;
             }
-            x = MetricsUtil.calculatePosition(horizontalStep, offset % 7,0);
-            y = MetricsUtil.calculatePosition(verticalStep, actualWeek, 0);
-            canvas.drawText(Integer.valueOf(actualDay).toString(), x, y, paint);
+            xCoordinate = MetricsUtil.calculatePosition(horizontalStep, offset % 7,0);
+            yCoordinate = MetricsUtil.calculatePosition(verticalStep, actualWeek, 0);
+            if (actualDay == selectedDate.getDayOfMonth()) {
+                canvas.drawCircle(xCoordinate + 10, yCoordinate - 50, 75, blackPaint);
+                canvas.drawText(Integer.valueOf(actualDay).toString(), xCoordinate, yCoordinate, whitePaint);
+            } else {
+                canvas.drawText(Integer.valueOf(actualDay).toString(), xCoordinate, yCoordinate, blackPaint);
+            }
             offset++;
             actualDay++;
         }
     }
 
-    public int getDayNumberByPosition(float x, float y) {
-        return MetricsUtil.getPositionByCoordinates(x, y, horizontalStep, verticalStep);
+    public int getDayNumberByPosition(float xCoordinate, float yCoordinate) {
+        int dayNumber = MetricsUtil.getPositionByCoordinates(xCoordinate, yCoordinate, horizontalStep, verticalStep);
+        LocalDate date = LocalDate.of(selectedDate.getYear(), month, 1);
+        dayNumber -= 7 + getFirstDayPosition() - 1;
+        if (dayNumber > date.lengthOfMonth()) {
+            dayNumber = -1;
+        }
+        return dayNumber;
+    }
+
+    public int getVerticalStep() {
+        return verticalStep;
+    }
+
+    public int getHorizontalStep() {
+        return horizontalStep;
+    }
+
+    public void setSelectedDate(LocalDate selectedDate) {
+        this.selectedDate = selectedDate;
     }
 
     private DayOfWeek[] getDays() {
@@ -93,11 +120,8 @@ public class MonthViewDrawHelper {
         return daysArray;
     }
 
-    public int getVerticalStep() {
-        return verticalStep;
-    }
-
-    public int getHorizontalStep() {
-        return horizontalStep;
+    private int getFirstDayPosition() {
+        LocalDate date = LocalDate.of(selectedDate.getYear(), month, 1);
+        return DateUtil.getDayPosition(days, DateUtil.firstDayOfMonth(date));
     }
 }

@@ -105,20 +105,22 @@ class MonthView extends View {
         int position = MetricsUtil.getPositionByCoordinates(x, y, helper.getHorizontalStep(), helper.getVerticalStep());
         eventBorder -= 50;
         if (y >= eventBorder) {
-            selectDay(getDateByPosition(x, y));
-            invalidate();
+            int day = helper.getDayNumberByPosition(x, y);
+            if (day > 0) {
+                LocalDate date = LocalDate.of(selectedDate.getYear(), month, day);
+                selectDay(date);
+                invalidate();
+            }
             handled = true;
         }
         return handled;
     }
 
     private void selectDay(LocalDate dayDate) {
+        this.selectedDate = dayDate;
+        this.helper.setSelectedDate(dayDate);
         if (onDaySelectedListener != null) {
             onDaySelectedListener.onDaySelected(dayDate);
         }
-    }
-
-    private LocalDate getDateByPosition(float x, float y) {
-        return LocalDate.of(selectedDate.getYear(), month, helper.getDayNumberByPosition(x, y));
     }
 }

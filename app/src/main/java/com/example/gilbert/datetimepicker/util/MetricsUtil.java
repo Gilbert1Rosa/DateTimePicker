@@ -8,12 +8,14 @@ public class MetricsUtil {
     }
 
     public static int getPositionByCoordinates(float x, float y, int xStep, int yStep) {
-        float vertical = y;
-        float horizontal = x;
+        double vertical = y;
+        double horizontal = x;
+        double cellNumber;
         vertical -= Constants.MONTH_VIEW_VERTICAL_PADDING + Constants.MONTH_VIEW_VERTICAL_MARGIN;
-        vertical /= yStep;
         horizontal -= Constants.MONTH_VIEW_HORIZONTAL_PADDING + Constants.MONTH_VIEW_HORIZONTAL_MARGIN;
-        horizontal /= xStep;
-        return (int)(horizontal + vertical * 7);
+        horizontal /=  xStep;
+        vertical /= yStep;
+        cellNumber = Math.round(horizontal) + Math.round(vertical) * 7;
+        return (int)cellNumber;
     }
 }
